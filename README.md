@@ -1,28 +1,33 @@
 # osdmodule
 TeamSpeak 3 (TS3) OSD Module for Linux
 
-This was written using TeamSpeak 3.0.17, API 20.  So if it doesn't work on a future version you have a reference point.
+**This was tested and worked on TeamSpeak 3.1.8 (22/01/2018)**
 
-It uses dzen2 to produce the overlay window.  You can get that by typing (debian style systems):
-sudo apt-get install dzen2
+## Prerequisites
 
-put the files into your /[ts3]/plugins/lua_plugin/osdmodule/ folder
+It uses dzen2 to produce the overlay window. You can get that by typing (debian style systems):
 
---
 
-You'll need to go to Settings - Plugins.
+    sudo apt-get install dzen2
 
-Check Lua Plugin.
 
-Select Lua Plugin.
+## Installation
 
-Click Settings.
+Put the files into your /*[ts3]*/plugins/lua_plugin/osdmodule/ folder
 
-Check osdmodule.
+The *[ts3]* folder is usually /home/USERNAME/.ts3client
 
-You can uncheck testmodule.
+## Activation
 
---
+Open TeamSpeak3, then to go to **Tools/Options**.
+
+Then select the **Addons** tab
+
+If you haven't already, download and install the **Lua Plugin** (click on 'Browse Online', enter 'lua' and instal the plugin). After installation, you may need to restart TeamSpeak3
+
+Now in the **Addons** tab, under **Lua Plugin**, click on **Settings**.
+
+Here, you can uncheck testmodule, then **check osdmodule**.
 
 You may need to reload all, or just restart TS3.
 
