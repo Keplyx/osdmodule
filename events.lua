@@ -30,23 +30,28 @@ local channelName = "TeamSpeak";	-- the channel you are in
 
 -- variable, you can safely change this part ---------------------------------------------------------------------------
 -- (x,y) coordinates for the top left corner of the window.  
-local x="50";			-- is the left to right position. 0 is left, your resolution defines the right coordinate (ex assuming 1920x1200, 1920 is the maximum x)
-local y="550";			-- is the up-down position. 0 is top, your resolution defines the bottom coordinate (ex assuming 1920x1200, 1200 is the maximum y)
+local x="300";			-- is the left to right position. 0 is left, your resolution defines the right coordinate (ex assuming 1920x1200, 1920 is the maximum x)
+local y="0";			-- is the up-down position. 0 is top, your resolution defines the bottom coordinate (ex assuming 1920x1200, 1200 is the maximum y)
 local w="160";			-- width of the window.  make this wide enough to fit the names
 local fontSize="12";	-- the font size for the display window
 
 -- you can use Gimp and put the HTML notation value for colors you like
-local bgColor="6699FF";			-- background color
-local talkingColor="ff0000";	-- users talking/transmitting
-local silentColor="00ff00";		-- users not talking/transmitting
-local talkingWhileDisabledColor="fdff37";	-- users attempting to transmit while muted
-
+local bgColor="201f1f";			-- background color
+local channelColor ="d4d2cf";
+local talkingColor="d4d2cf";	-- users talking/transmitting
+local silentColor="d4d2cf";		-- users not talking/transmitting
+local talkingWhileDisabledColor="d4d2cf";	-- users attempting to transmit while muted
+-- Icons : Specify the path relative to your home folder (images must be in the format .xbm or .xpm)
+local channelIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/channel.xpm";
+local talkingIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_player_on.xpm";
+local silentIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_player_off.xpm";
+local talkingWhileDisabledIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_player_whisper.xpm";
 -- you can either show everyone or just who is talking (1 = everyone, 0 = just talking)
 -- if you are in channels with lots of users you may only want to show who is talking
 local showEveryone=1;
 
 -- use the channel name as the title bar of the display window (1 = use channel name, 0 = always show "TeamSpeak")
-local useChannelName=0;
+local useChannelName=1;
 -- end safe variable section -------------------------------------------------------------------------------------------
 
 local function onTalkStatusChangeEvent(serverConnectionHandlerID, status, isReceivedWhisper, clientID)
@@ -69,7 +74,7 @@ local TalkStatus = {
 		if (val==0) then  -- 0 = not talking/transmitting
 			local clientName, error = ts3.getClientVariableAsString(serverConnectionHandlerID, key, ts3defs.ClientProperties.CLIENT_NICKNAME);
 			if error == ts3errors.ERROR_ok then
-				msg = msg .. "\n^fg(#" .. silentColor .. ")" .. clientName;
+                msg = msg .. "\n^i(" .. silentIcon .. ") ^fg(#" .. silentColor .. ")" .. clientName;
 				numClients = numClients + 1;
 			end
 		end
@@ -77,7 +82,7 @@ local TalkStatus = {
 		if (val==1 and showEveryone==1) then  -- 1 = talking (really either voice activated transmitting or push-to-talk is pressed)
 			local clientName, error = ts3.getClientVariableAsString(serverConnectionHandlerID, key, ts3defs.ClientProperties.CLIENT_NICKNAME);
 			if error == ts3errors.ERROR_ok then
-				msg = msg .. "\n^fg(#" .. talkingColor .. ")" .. clientName;
+                msg = msg .. "\n^i(" .. talkingIcon .. ") ^fg(#" .. talkingColor .. ")" .. clientName;
 				numClients = numClients + 1;
 			end
 		end
@@ -85,7 +90,7 @@ local TalkStatus = {
 		if (val==2 and showEveryone==1) then  -- 2 = talking While Disabled (muted but attempting to transmit)
 			local clientName, error = ts3.getClientVariableAsString(serverConnectionHandlerID, key, ts3defs.ClientProperties.CLIENT_NICKNAME);
 			if error == ts3errors.ERROR_ok then
-				msg = msg .. "\n^fg(#" .. talkingWhileDisabledColor .. ")" .. clientName;
+                msg = msg .. "\n^i(" .. talkingWhileDisabledIcon .. ") ^fg(#" .. talkingWhileDisabledColor .. ")" .. clientName;
 				numClients = numClients + 1;
 			end
 		end
@@ -99,7 +104,7 @@ local TalkStatus = {
 
 	-- display the window
 	os.execute("pkill -TERM -f \"dzen2.*TeamSpeak\"")
-	os.execute("echo \"" .. channelName .. " " .. msg .. "\" | dzen2 -p 0 -y " .. y .. " -x " .. x .. " -w " .. w .. " -bg '#" .. bgColor .. "' -fg '#161616' -fn '-*-bitstream vera sans mono-medium-r-normal-*-" .. fontSize .. "-*-*-*-*-*-*-*' -l " .. numClients .. " -e \"onstart=uncollapse\" -title-name \"TeamSpeak\" &")
+    os.execute("echo \"" .. "^i(" .. channelIcon .. ") ^fg(#" .. channelColor .. ")" .. channelName ..  " " .. msg .. "\" | dzen2 -p 0 -y " .. y .. " -x " .. x .. " -w " .. w .. " -bg '#" .. bgColor .. "' -fg '#161616' -fn '-*-bitstream vera sans mono-medium-r-normal-*-" .. fontSize .. "-*-*-*-*-*-*-*' -l " .. numClients .. " -e \"onstart=uncollapse\" -title-name \"TeamSpeak\" &")
 --	os.execute("echo \"DEBUG TeamSpeak " .. msg .. "\" >> ~/Documents/ts3debug.log")
 
 --[[
