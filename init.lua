@@ -39,7 +39,8 @@ local function createMenus(moduleMenuItemID)
 	-- the lua_plugin directory.
 
 	return {
-		{ts3defs.PluginMenuType.PLUGIN_MENU_TYPE_GLOBAL,  osdmodule_events.MenuIDs.MENU_ID_GLOBAL_1,  "osdmodule: Settings",  "../test_plugin/1.png"}
+		{ts3defs.PluginMenuType.PLUGIN_MENU_TYPE_GLOBAL,  osdmodule_events.MenuIDs.MENU_ID_GLOBAL_1,  "osdmodule: Settings",  "plugins/osdmodule/images/16x16_settings.png"},
+        {ts3defs.PluginMenuType.PLUGIN_MENU_TYPE_GLOBAL,  osdmodule_events.MenuIDs.MENU_ID_GLOBAL_2,  "osdmodule: Toggle",  "plugins/osdmodule/images/16x16_settings.png"}
 	}
 end
 

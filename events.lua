@@ -17,18 +17,22 @@ require("ts3defs")
 
 -- I'm not sure how to create the menu window, so I can't move the settings there
 local MenuIDs = {
-    MENU_ID_GLOBAL_1 = 1
+    MENU_ID_GLOBAL_1 = 1,
+    MENU_ID_GLOBAL_2 = 2
 }
 
+-- Will store factor to add to menuID to calculate the real menuID used in the TeamSpeak client (to support menus from multiple Lua modules)
+-- Add this value to above menuID when passing the ID to setPluginMenuEnabled. See demo.lua for an example.
+local moduleMenuItemID = 0
+
+-- Make understanding status easier
 local TalkStatus = {
 	STATUS_NOT_TALKING = 0,
 	STATUS_TALKING = 1,
 	STATUS_TALKING_WHILE_DISABLED = 2
 }
 
--- Will store factor to add to menuID to calculate the real menuID used in the TeamSpeak client (to support menus from multiple Lua modules)
--- Add this value to above menuID when passing the ID to setPluginMenuEnabled. See demo.lua for an example.
-local moduleMenuItemID = 0
+local pluginEnabled = true;
 
 local clients = {} -- the client list
 local numClients = 0; -- the number of clients displayed in the window
@@ -48,10 +52,10 @@ local talkingColor = "d4d2cf"; -- users talking/transmitting
 local silentColor = "d4d2cf"; -- users not talking/transmitting
 local talkingWhileDisabledColor = "d4d2cf"; -- users attempting to transmit while muted
 -- Icons : Specify the path relative to your home folder (images must be in the format .xbm or .xpm)
-local channelIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_channel.xpm";
-local talkingIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_player_on.xpm";
-local silentIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_player_off.xpm";
-local talkingWhileDisabledIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/16x16_player_whisper.xpm";
+local channelIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/images/16x16_channel.xpm";
+local talkingIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/images/16x16_player_on.xpm";
+local silentIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/images/16x16_player_off.xpm";
+local talkingWhileDisabledIcon = os.getenv ( "HOME" ) .. "/.ts3client/plugins/lua_plugin/osdmodule/images/16x16_player_whisper.xpm";
 -- you can either show everyone or just who is talking (1 = everyone, 0 = just talking)
 -- if you are in channels with lots of users you may only want to show who is talking
 local showEveryone = 1;
@@ -102,7 +106,9 @@ local function displayOsd(serverConnectionHandlerID)
     end
     -- display the window
     removeOsdWindow()
-    os.execute("echo \"" .. "^i(" .. channelIcon .. ") ^fg(#" .. channelColor .. ")" .. channelName ..  " " .. msg .. "\" | dzen2 -p 0 -y " .. y .. " -x " .. x .. " -w " .. w .. " -bg '#" .. bgColor .. "' -fg '#161616' -fn '-*-bitstream vera sans mono-medium-r-normal-*-" .. fontSize .. "-*-*-*-*-*-*-*' -l " .. numClients .. " -e \"onstart=uncollapse\" -title-name \"TeamSpeak\" &")
+    if (pluginEnabled) then
+        os.execute("echo \"" .. "^i(" .. channelIcon .. ") ^fg(#" .. channelColor .. ")" .. channelName ..  " " .. msg .. "\" | dzen2 -p 0 -y " .. y .. " -x " .. x .. " -w " .. w .. " -bg '#" .. bgColor .. "' -fg '#161616' -fn '-*-bitstream vera sans mono-medium-r-normal-*-" .. fontSize .. "-*-*-*-*-*-*-*' -l " .. numClients .. " -e \"onstart=uncollapse\" -title-name \"TeamSpeak\" &")
+    end
 end
 
 local function onTalkStatusChangeEvent(serverConnectionHandlerID, status, isReceivedWhisper, clientID)
@@ -184,9 +190,17 @@ end
 --  selectedItemID: Channel or Client ID in the case of PLUGIN_MENU_TYPE_CHANNEL and PLUGIN_MENU_TYPE_CLIENT. 0 for PLUGIN_MENU_TYPE_GLOBAL.
 --
 local function onMenuItemEvent(serverConnectionHandlerID, menuType, menuItemID, selectedItemID)
-    --ts3.printMessageToCurrentTab("osdmodule: onMenuItemEvent: " .. serverConnectionHandlerID .. " " .. menuType .. " " .. menuItemID .. " " .. selectedItemID)
-    ts3.printMessageToCurrentTab("The Settings menu hasn't been implemented.  To change settings edit the /osdmodule/events.lua file.\nSearch for \"variable\".")
-    --os.execute("echo \"DEBUG TeamSpeak menu event\" >> ~/Documents/ts3debug.log")
+    if (menuItemID == MenuIDs.MENU_ID_GLOBAL_1) then
+        ts3.printMessageToCurrentTab("The Settings menu hasn't been implemented. To change settings edit the /osdmodule/events.lua file.\nSearch for \"variable\".")
+    elseif (menuItemID == MenuIDs.MENU_ID_GLOBAL_2) then
+        pluginEnabled = not pluginEnabled;
+        displayOsd(serverConnectionHandlerID)
+        if (pluginEnabled) then
+            ts3.printMessageToCurrentTab("osdmodule enabled")
+        else
+            ts3.printMessageToCurrentTab("osdmodule disabled")
+        end
+    end
 end
 
 --[[
@@ -236,7 +250,6 @@ osdModule: onConnectStatusChangeEvent: status=4, errorNumber=0, local error=0, m
 	end
 end
 ]]
-
 
 osdmodule_events = {
     MenuIDs = MenuIDs,
