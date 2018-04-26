@@ -36,14 +36,18 @@ local pluginEnabled = true;
 
 local clients = {} -- the client list
 local numClients = 0; -- the number of clients displayed in the window
-local channelName = "TeamSpeak"; -- the channel you are in
+local channelName = "TeamSpeak 3"; -- the channel you are in
 
--- variable, you can safely change this part ---------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-- VARIABLES, you can safely change this part ---------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+
 -- (x,y) coordinates for the top left corner of the window.
 local x = "300"; -- is the left to right position. 0 is left, your resolution defines the right coordinate (ex assuming 1920x1200, 1920 is the maximum x)
 local y = "0"; -- is the up-down position. 0 is top, your resolution defines the bottom coordinate (ex assuming 1920x1200, 1200 is the maximum y)
 local w = "160"; -- width of the window.  make this wide enough to fit the names
 local fontSize = "12"; -- the font size for the display window
+local fontFamily = "ubuntu" -- the font used in the window
 
 -- you can use Gimp and put the HTML notation value for colors you like
 local bgColor = "201f1f"; -- background color
@@ -64,7 +68,9 @@ local showEveryone = 1;
 local useChannelName = 1;
 local defaultChannelName = "TeamSpeak";
 
--- end safe variable section -------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-- end safe variable section --------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
 
 local function removeOsdWindow()
     os.execute("pkill -TERM -f \"dzen2.* TeamSpeak\"")
@@ -107,7 +113,7 @@ local function displayOsd(serverConnectionHandlerID)
     -- display the window
     removeOsdWindow()
     if (pluginEnabled) then
-        os.execute("echo \"" .. "^i(" .. channelIcon .. ") ^fg(#" .. channelColor .. ")" .. channelName ..  " " .. msg .. "\" | dzen2 -p 0 -y " .. y .. " -x " .. x .. " -w " .. w .. " -bg '#" .. bgColor .. "' -fg '#161616' -fn '-*-bitstream vera sans mono-medium-r-normal-*-" .. fontSize .. "-*-*-*-*-*-*-*' -l " .. numClients .. " -e \"onstart=uncollapse\" -title-name \"TeamSpeak\" &")
+        os.execute("echo \"" .. "^i(" .. channelIcon .. ") ^fg(#" .. channelColor .. ")" .. channelName ..  " " .. msg .. "\" | dzen2 -p 0 -y " .. y .. " -x " .. x .. " -w " .. w .. " -bg '#" .. bgColor .. "' -fg '#161616' -fn '-*-" .. fontFamily .. "-medium-r-normal-*-" .. fontSize .. "-*-*-*-*-*-*-*' -l " .. numClients .. " -e \"onstart=uncollapse\" -title-name \"TeamSpeak\" &")
     end
 end
 
