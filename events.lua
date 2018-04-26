@@ -69,7 +69,6 @@ end
 local function displayOsd(serverConnectionHandlerID)
     numClients = 0;
     local msg = "";
-    ts3.printMessageToCurrentTab("oooooooooooh")
     -- get the list of clients
     for key, val in pairs(clients) do
         -- based on the status, color the client's name
