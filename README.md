@@ -1,7 +1,9 @@
 # osdmodule
 TeamSpeak 3 (TS3) OSD Module for Linux
 
-**This was tested and worked on TeamSpeak 3.1.8 (22/01/2018)**
+Displays an overlay showing your active channel and who is talking. Works along with basically every app.
+
+**This was tested on TeamSpeak 3.1.8 (22/01/2018)**
 
 ## Prerequisites
 
@@ -23,7 +25,7 @@ Open TeamSpeak3, then to go to **Tools/Options**.
 
 Then select the **Addons** tab
 
-If you haven't already, download and install the **Lua Plugin** (click on 'Browse Online', enter 'lua' and instal the plugin). After installation, you may need to restart TeamSpeak3
+If you haven't already, download and install the **Lua Plugin** (click on 'Browse Online', enter 'lua' and install the plugin). After installation, you may need to restart TeamSpeak3
 
 Now in the **Addons** tab, under **Lua Plugin**, click on **Settings**.
 
